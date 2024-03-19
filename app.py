@@ -43,9 +43,8 @@ def list_all_characters():
         'id': character.id,
         'name': character.name,
         'species': character.species,
-        'origin': character.origin_name,
-        'location': character.location_name,
-        'image_url': character.image_url
+        'image_url': character.image_url,
+        'status': character.status
     } for character in characters]
 
     total_pages = characters.pages
@@ -67,19 +66,31 @@ def list_all_characters():
     
 
 # route to get one character
-@app.route('/<int:character_id>')
+@app.route('/character/<int:character_id>')
 def detail_character(character_id):
     charater = Characters.query.get(character_id)
+    if character is None:
+        return jsonify({
+            "sucess": False,
+            "message": "Character not found."
+        })
+        
     character_dict = {
         'id': charater.id,
         'name': charater.name,
         'type': charater.type,
         'gender': charater.gender,
+        'status': charater.status,
+        'species': charater.species,
         'origin_name': charater.origin_name,
         'location_name': charater.location_name,
         'image_url': charater.image_url
     }
-    return jsonify(character_dict)
+    return jsonify({
+            "sucess": True,
+            "message": "Character found!",
+            "data": character_dict
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)
